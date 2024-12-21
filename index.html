@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .chat-box .user-message,
+        .chat-box .bot-message {
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            color: black;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 15%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .select-button {
+            background-color: #28a745;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Travel Assistant Bot</h2>
+        <div id="chat-box" class="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Ask me anything..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function sendMessage() {
+            var userInput = $('#user-input').val();
+            $('#chat-box').append('<div class="user-message">' + userInput + '</div>');
+            $('#user-input').val('');
+            $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+
+            $.post("/ask", { user_input: userInput }, function(data) {
+                $('#chat-box').append('<div class="bot-message">' + data.response + '</div>');
+                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+            });
+        }
+
+        function selectFlight(flightId) {
+            $.post("/select_flight", { flight_id: flightId }, function(data) {
+                $('#chat-box').append('<div class="bot-message">' + data.response + '</div>');
+                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+            });
+        }
+    </script>
+
+</body>
+</html>
